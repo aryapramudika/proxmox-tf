@@ -83,9 +83,6 @@ resource "proxmox_vm_qemu" "qemu-vm" {
     type = "socket"
   }
 
-  # Set display to serial terminal 0
-  display = "serial0"
-
   disks {
     virtio {
       virtio0 {
