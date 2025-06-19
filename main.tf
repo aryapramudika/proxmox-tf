@@ -36,6 +36,7 @@ variable "vm_configs" {
     disk_size = string
     bridge    = string
     ip        = string
+    gateway   = string
   }))
 }
 
@@ -75,7 +76,7 @@ resource "proxmox_vm_qemu" "qemu-vm" {
   searchdomain = "localhost"
   sshkeys      = var.sshkeys
 
-  ipconfig0 = "ip=${each.value.ip}"
+  ipconfig0 = "ip=${each.value.ip},gw=${each.value.gateway}"
 
   # Add serial port for cloud-init and console access
   serial {
