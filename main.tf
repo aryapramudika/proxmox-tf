@@ -75,6 +75,8 @@ resource "proxmox_vm_qemu" "qemu-vm" {
   searchdomain = "localhost"
   sshkeys      = var.sshkeys
 
+  ipconfig0 = "ip=${each.value.ip}"
+
   disks {
     virtio {
       virtio0 {
@@ -96,6 +98,5 @@ resource "proxmox_vm_qemu" "qemu-vm" {
     id        = 0
     link_down = false
     model     = "virtio"
-    ipconfig0 = "ip=${each.value.ip}"
   }
 }
