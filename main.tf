@@ -7,10 +7,26 @@ terraform {
   }
 }
 
-variable "pm_api_url" { description = "Proxmox API URL"; type = string }
-variable "pm_api_token_id" { description = "Proxmox API token ID"; type = string }
-variable "pm_api_token_secret" { description = "Proxmox API token secret"; type = string }
-variable "sshkeys" { description = "SSH public key(s) to inject into the VM"; type = string }
+variable "pm_api_url" {
+  description = "Proxmox API URL"
+  type        = string
+}
+
+variable "pm_api_token_id" {
+  description = "Proxmox API token ID"
+  type        = string
+}
+
+variable "pm_api_token_secret" {
+  description = "Proxmox API token secret"
+  type        = string
+}
+
+variable "sshkeys" {
+  description = "SSH public key(s) to inject into the VM"
+  type        = string
+}
+
 variable "vm_configs" {
   type = map(object({
     vm_id     = number
