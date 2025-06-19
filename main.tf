@@ -84,6 +84,14 @@ resource "proxmox_vm_qemu" "qemu-vm" {
   }
 
   disks {
+    # Cloud-init drive (ide2 is standard for Proxmox)
+    ide {
+      ide2 {
+        cloudinit {
+          storage = "local"
+        }
+      }
+    }
     virtio {
       virtio0 {
         disk {
