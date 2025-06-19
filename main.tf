@@ -77,6 +77,15 @@ resource "proxmox_vm_qemu" "qemu-vm" {
 
   ipconfig0 = "ip=${each.value.ip}"
 
+  # Add serial port for cloud-init and console access
+  serial {
+    id   = 0
+    type = "socket"
+  }
+
+  # Set display to serial terminal 0
+  display = "serial0"
+
   disks {
     virtio {
       virtio0 {
