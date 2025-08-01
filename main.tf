@@ -56,16 +56,6 @@ variable "vm_password" {
   default     = "ubuntu"
 }
 
-provider "proxmox" {
-  pm_api_url         = var.pm_api_url
-  pm_tls_insecure    = true
-  # Use environment variables for secrets:
-  # export PM_API_TOKEN_ID="your-user@pve!your-token-name"
-  # export PM_API_TOKEN_SECRET="your-token-secret"
-  pm_api_token_id     = var.pm_api_token_id
-  pm_api_token_secret = var.pm_api_token_secret
-}
-
 resource "proxmox_vm_qemu" "qemu-vm" {
   for_each = var.vm_configs
 
