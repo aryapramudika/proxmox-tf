@@ -41,6 +41,13 @@ variable "cluster_name" {
   default     = "pve"
 }
 
+# Add variable for storage backend
+variable "storage_backend" {
+  description = "Proxmox storage backend for VM disks"
+  type        = string
+  default     = "local"
+}
+
 provider "proxmox" {
   pm_api_url         = var.pm_api_url
   pm_tls_insecure    = true
@@ -128,7 +135,7 @@ resource "proxmox_vm_qemu" "qemu-vm" {
     ide {
       ide2 {
         cloudinit {
-          storage = "local"
+          storage = var.storage_backend
         }
       }
     }
@@ -140,7 +147,7 @@ resource "proxmox_vm_qemu" "qemu-vm" {
           format    = "raw"
           iothread  = true
           replicate = true
-          storage   = "local"
+          storage   = var.storage_backend
         }
       }
     }
