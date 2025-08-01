@@ -96,8 +96,8 @@ resource "proxmox_vm_qemu" "qemu-vm" {
   vmid    = each.value.vm_id
   name    = each.value.name
   vcpus   = each.value.vcpus
-  memory  = each.value.memory
-  balloon = each.value.memory
+  memory  = each.value.memory * 1024  # Convert to MB (assuming CSV values are in GB)
+  balloon = each.value.memory * 1024
   
   # Clone Template - now using variable
   clone       = var.template_name
@@ -108,7 +108,7 @@ resource "proxmox_vm_qemu" "qemu-vm" {
   # Default Options
   cpu_type     = "host"
   sockets      = 1
-  cores        = 2
+  cores        = each.value.vcpus  # Use vcpus from CSV
   numa         = true
   onboot       = true
   hotplug      = "disk,network,memory,cpu"
