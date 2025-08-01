@@ -14,6 +14,26 @@ variable "pm_api_url" {
   default     = "https://10.10.10.141:8006/api2/json"
 }
 
+# Add variables for Proxmox API credentials
+variable "pm_api_token_id" {
+  description = "Proxmox API token ID"
+  type        = string
+  sensitive   = true
+}
+
+variable "pm_api_token_secret" {
+  description = "Proxmox API token secret"
+  type        = string
+  sensitive   = true
+}
+
+# Add variable for SSH keys
+variable "sshkeys" {
+  description = "SSH public keys for VM access"
+  type        = string
+  default     = ""
+}
+
 provider "proxmox" {
   pm_api_url         = var.pm_api_url
   pm_tls_insecure    = true
