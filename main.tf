@@ -7,24 +7,21 @@ terraform {
   }
 }
 
+# Add variable for PM API URL
 variable "pm_api_url" {
   description = "Proxmox API URL"
   type        = string
+  default     = "https://10.10.10.141:8006/api2/json"
 }
 
-variable "pm_api_token_id" {
-  description = "Proxmox API token ID"
-  type        = string
-}
-
-variable "pm_api_token_secret" {
-  description = "Proxmox API token secret"
-  type        = string
-}
-
-variable "sshkeys" {
-  description = "SSH public key(s) to inject into the VM"
-  type        = string
+provider "proxmox" {
+  pm_api_url         = var.pm_api_url
+  pm_tls_insecure    = true
+  # Use environment variables for secrets:
+  # export PM_API_TOKEN_ID="your-user@pve!your-token-name"
+  # export PM_API_TOKEN_SECRET="your-token-secret"
+  pm_api_token_id     = var.pm_api_token_id
+  pm_api_token_secret = var.pm_api_token_secret
 }
 
 variable "vm_configs" {
@@ -40,9 +37,31 @@ variable "vm_configs" {
   }))
 }
 
+# New variables for template, username, and password
+variable "template_name" {
+  description = "Name of the template to clone from"
+  type        = string
+  default     = "t-ubuntu22"
+}
+
+variable "vm_username" {
+  description = "Username for the VM"
+  type        = string
+  default     = "ubuntu"
+}
+
+variable "vm_password" {
+  description = "Password for the VM"
+  type        = string
+  default     = "ubuntu"
+}
+
 provider "proxmox" {
   pm_api_url         = var.pm_api_url
   pm_tls_insecure    = true
+  # Use environment variables for secrets:
+  # export PM_API_TOKEN_ID="your-user@pve!your-token-name"
+  # export PM_API_TOKEN_SECRET="your-token-secret"
   pm_api_token_id     = var.pm_api_token_id
   pm_api_token_secret = var.pm_api_token_secret
 }
@@ -55,12 +74,14 @@ resource "proxmox_vm_qemu" "qemu-vm" {
   vcpus   = each.value.vcpus
   memory  = each.value.memory
   balloon = each.value.memory
-
-  clone       = "t-ubuntu22"
+  
+  # Clone Template - now using variable
+  clone       = var.template_name
   clone_wait  = 5
   full_clone  = true
   target_node = "arya-pve"
 
+  # Default Options
   cpu_type     = "host"
   sockets      = 1
   cores        = 2
@@ -69,13 +90,14 @@ resource "proxmox_vm_qemu" "qemu-vm" {
   hotplug      = "disk,network,memory,cpu"
   scsihw       = "virtio-scsi-single"
 
-  cipassword   = "ubuntu"
+  # Cloud-init Configuration - now using variables
+  cipassword   = var.vm_password
   ciupgrade    = true
-  ciuser       = "ubuntu"
+  ciuser       = var.vm_username
   nameserver   = "8.8.8.8"
   searchdomain = "localhost"
   sshkeys      = var.sshkeys
-
+  
   ipconfig0 = "ip=${each.value.ip},gw=${each.value.gateway}"
 
   # Add serial port for cloud-init and console access
