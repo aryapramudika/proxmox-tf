@@ -34,6 +34,13 @@ variable "sshkeys" {
   default     = ""
 }
 
+# Add variable for cluster name
+variable "cluster_name" {
+  description = "Proxmox cluster/node name"
+  type        = string
+  default     = "pve"
+}
+
 provider "proxmox" {
   pm_api_url         = var.pm_api_url
   pm_tls_insecure    = true
@@ -89,7 +96,7 @@ resource "proxmox_vm_qemu" "qemu-vm" {
   clone       = var.template_name
   clone_wait  = 5
   full_clone  = true
-  target_node = "arya-pve"
+  target_node = var.cluster_name
 
   # Default Options
   cpu_type     = "host"
